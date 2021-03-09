@@ -42,15 +42,13 @@
     "react-sortable-hoc": "1.11.0",
     "storeon": "3.1.4",
     "styled-components": "5.2.1",
-    "styled-normalize": "8.0.7",
-    "webpack": "5.24.3"
+    "styled-normalize": "8.0.7"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-decorators": "7.13.5",
     "@craco/craco": "6.1.1",
     "@loadable/babel-plugin": "5.13.2",
-    "@loadable/webpack-plugin": "5.14.2",
     "@startupcraft/dotenv-config": "0.0.2",
     "babel-plugin-styled-components": "1.12.0",
     "circular-dependency-plugin": "5.2.2",

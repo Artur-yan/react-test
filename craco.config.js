@@ -7,7 +7,7 @@ const {
 } = require('@craco/craco')
 const CracoEsbuildPlugin = require('craco-esbuild')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
-const LoadablePlugin = require('@loadable/webpack-plugin')
+// const LoadablePlugin = require('@loadable/webpack-plugin')
 
 module.exports = {
   eslint: {
@@ -44,7 +44,7 @@ module.exports = {
 
   webpack: {
     plugins: [
-      new LoadablePlugin(),
+      // new LoadablePlugin(),
       ...whenDev(
         () => [
           new CircularDependencyPlugin({

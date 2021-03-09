@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { useQuery } from '@apollo/client'
@@ -9,12 +9,18 @@ import postsQuery from 'GraphQL/Queries/posts.graphql'
 
 import { POST } from 'Router/routes'
 
-import { Column, Container, Post, PostAuthor, PostBody } from './styles'
+import {Column, Container, Post, PostAuthor, PostBody} from './styles'
 
 import ExpensiveTree from '../ExpensiveTree'
+import Pagination from "../Pagination";
 
 function Root() {
   const [count, setCount] = useState(0)
+  const [pagination, setPagination] = useState({
+    page: 0,
+    limit: 40,
+    total:0
+  })
   const [fields, setFields] = useState([
     {
       name: faker.name.findName(),
@@ -23,7 +29,32 @@ function Root() {
   ])
 
   const [value, setValue] = useState('')
-  const { data, loading } = useQuery(postsQuery)
+  const { data, loading, fetchMore} = useQuery(postsQuery, {
+    variables: {
+      page: 0,
+      limit: 40,
+    },
+  });
+
+  function handleLoadMore(page) {
+    setPagination({...pagination, page})
+    fetchMore({
+      variables: {
+        page: pagination.page,
+        limit: pagination.limit,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+        return fetchMoreResult;
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (data) {
+      setPagination({...pagination, total: data.posts.meta.totalCount})
+    }
+  }, [data])
 
   function handlePush() {
     setFields([{ name: faker.name.findName(), id: nanoid() }, ...fields])
@@ -43,8 +74,8 @@ function Root() {
         <h4>Need to add pagination</h4>
         {loading
           ? 'Loading...'
-          : posts.map(post => (
-              <Post mx={4}>
+          : posts.map((post, index) => (
+              <Post key={index} mx={4}>
                 <NavLink href={POST(post.id)} to={POST(post.id)}>
                   {post.title}
                 </NavLink>
@@ -52,7 +83,7 @@ function Root() {
                 <PostBody>{post.body}</PostBody>
               </Post>
             ))}
-        <div>Pagination here</div>
+          <Pagination data={pagination} onLoadMore={(page) => {handleLoadMore(page)}}/>
       </Column>
       <Column>
         <h4>Slow rendering</h4>

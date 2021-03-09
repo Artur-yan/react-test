@@ -1,8 +1,6 @@
 # Task
 
-You should find issues, then implement pagination on the all posts component, and next/previous navigation inside the single post. Please fork and fix.
-
-API docs here: https://graphqlzero.almansi.me/api
+You should find issues, and implement pagination and next/previous navigation inside post. Please fork and fix
 
 ### Prerequisites
 
