@@ -16,9 +16,10 @@ import Pagination from "../Pagination";
 
 function Root() {
   const [count, setCount] = useState(0)
+  const [posts, setPosts] = useState([])
   const [pagination, setPagination] = useState({
     page: 0,
-    limit: 40,
+    limit: 5,
     total:0
   })
   const [fields, setFields] = useState([
@@ -32,7 +33,7 @@ function Root() {
   const { data, loading, fetchMore} = useQuery(postsQuery, {
     variables: {
       page: 0,
-      limit: 40,
+      limit: 5,
     },
   });
 
@@ -40,7 +41,7 @@ function Root() {
     setPagination({...pagination, page})
     fetchMore({
       variables: {
-        page: pagination.page,
+        page,
         limit: pagination.limit,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -54,19 +55,23 @@ function Root() {
     if (data) {
       setPagination({...pagination, total: data.posts.meta.totalCount})
     }
+
+    if (data?.posts.data) {
+      setPosts(data.posts.data)
+    }
   }, [data])
 
   function handlePush() {
     setFields([{ name: faker.name.findName(), id: nanoid() }, ...fields])
   }
 
-  function handleAlertClick() {
-    setTimeout(() => {
-      alert(`You clicked ${count} times`)
-    }, 2500)
+  async function handleAlertClick() {
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(() => resolve(count), 2500)
+    });
+    const result = await promise;
+    alert(`You clicked ${result} times`)
   }
-
-  const posts = data?.posts.data || []
 
   return (
     <Container>

@@ -19,20 +19,20 @@ import {
   PostContainer,
 } from './styles'
 
-const SortableContainer = sortableContainer(({ children }) => (
-  <div>{children}</div>
-))
-
-const SortableItem = sortableElement(({ value }) => (
-  <PostComment mb={2}>{value}</PostComment>
-))
-
 function Post() {
   const [comments, setComments] = useState([])
   const history = useHistory()
   const {
     params: { postId },
   } = useRouteMatch()
+
+  const SortableContainer = sortableContainer(({ children }) => (
+    <div>{children}</div>
+  ))
+
+  const SortableItem = sortableElement(({ value }) => (
+    <PostComment mb={2}>{value}</PostComment>
+  ))
 
   const handleClick = () => history.push(ROOT)
 
@@ -42,11 +42,11 @@ function Post() {
 
   const { data, loading } = useQuery(postQuery, { variables: { id: postId } })
 
-  const post = data?.post || {}
-
   useEffect(() => {
-    setComments(post.comments?.data || [])
-  }, [post])
+    if (data?.post) {
+      setComments(data.post.comments?.data || [])
+    }
+  }, [data])
 
   return (
     <Container>
@@ -59,10 +59,10 @@ function Post() {
         <>
           <Column>
             <h4>Need to add next/previous links</h4>
-            <PostContainer key={post.id}>
-              <h3>{post.title}</h3>
-              <PostAuthor>by {post.user.name}</PostAuthor>
-              <PostBody mt={2}>{post.body}</PostBody>
+            <PostContainer key={data.post.id}>
+              <h3>{data.post.title}</h3>
+              <PostAuthor>by {data.post.user.name}</PostAuthor>
+              <PostBody mt={2}>{data.post.body}</PostBody>
             </PostContainer>
             <div>Next/prev here</div>
           </Column>
